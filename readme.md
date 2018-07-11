@@ -8,7 +8,6 @@ Simple example using ionic with sw, manifest and native components.
 
 ### Installation
 
-
 Install the dependencies and devDependencies and start the server.
 
 ```sh
@@ -21,3 +20,5 @@ For production
 ```sh
 $ ionic build --prod
 ```
+
+![alt text](http://url/to/img.png)
