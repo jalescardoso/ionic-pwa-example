@@ -14,6 +14,7 @@ Install the dependencies and devDependencies and start the server.
 $ npm install 
 $ ionic serve
 ```
+[http://127.0.0.1:8100/](http://127.0.0.1:8100/) only ip 127.0.0.1 is authorized without a certificate
 
 For production
 

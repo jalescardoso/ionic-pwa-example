@@ -32,10 +32,11 @@ export class HomePage {
 	}
 
 	takePhoto() {
-		navigator.mediaDevices.getUserMedia({ video: { width: { max: 1000 }, height: { max: 1000 } } })
+		let constraints = { video: true };
+		navigator.mediaDevices.getUserMedia(constraints)
 			.then(mStream => {
 				this.video.nativeElement.src = window.URL.createObjectURL(mStream);
-				this.video.nativeElement.play();
+				// this.video.nativeElement.play();
 			})
 			.catch(error => console.error('getUserMedia() error:', error));
 	}
