@@ -21,4 +21,4 @@ For production
 $ ionic build --prod
 ```
 
-![alt text](http://url/to/img.png)
+![alt text](https://raw.githubusercontent.com/jalescardoso/ionic-pwa-example/master/Screenshot_20180711-100329.png)
