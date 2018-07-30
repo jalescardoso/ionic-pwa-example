@@ -11,7 +11,6 @@ export class HomePage {
 	constructor(
 		private _sanitizer: DomSanitizer,
 		public navCtrl: NavController) {
-
 		new Promise<any>(resolve => window.addEventListener("beforeinstallprompt", resolve))
 			.then(ev => {
 				console.log('beforeinstallprompt out');
@@ -30,7 +29,6 @@ export class HomePage {
 	}
 	
 	async ngOnInit() {
-		this.getLoc();
 		this.camAvb = await new Promise<boolean>(resolve => {
 			navigator.mediaDevices.getUserMedia({ video: true })
 				.then(mStream => { mStream.stop(); resolve(true); })
