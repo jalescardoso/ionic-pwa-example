@@ -1,13 +1,16 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 declare var window;
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
 	selector: 'page-home',
 	templateUrl: 'home.html'
 })
 export class HomePage {
-	constructor(public navCtrl: NavController) {
+	constructor(
+		private _sanitizer: DomSanitizer,
+		public navCtrl: NavController) {
 
 		new Promise<any>(resolve => window.addEventListener("beforeinstallprompt", resolve))
 			.then(ev => {
@@ -18,7 +21,22 @@ export class HomePage {
 	}
 	prompt;
 	position;
+	photoBlob;
+	camAvb = false;
 	@ViewChild('videoId') video: ElementRef;
+
+	cameraAvaiable() {
+		 return true;
+	}
+	
+	async ngOnInit() {
+		this.getLoc();
+		this.camAvb = await new Promise<boolean>(resolve => {
+			navigator.mediaDevices.getUserMedia({ video: true })
+				.then(mStream => { mStream.stop(); resolve(true); })
+				.catch(error => resolve(false));
+		});
+	}
 
 	addHome() {
 		if (!this.prompt) return;
@@ -31,13 +49,8 @@ export class HomePage {
 			.catch(err => console.error(err));
 	}
 
-	takePhoto() {
-		let constraints = { video: true };
-		navigator.mediaDevices.getUserMedia(constraints)
-			.then(mStream => {
-				this.video.nativeElement.src = window.URL.createObjectURL(mStream);
-				// this.video.nativeElement.play();
-			})
-			.catch(error => console.error('getUserMedia() error:', error));
+	teste(e) {
+		var file = e.target.files[0];
+		this.photoBlob = this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
 	}
 }
