@@ -25,13 +25,18 @@ export class HomePage {
 	@ViewChild('videoId') video: ElementRef;
 
 	cameraAvaiable() {
-		 return true;
+		if (this.ifAndroidOrIOS() && this.camAvb) return true;
+		else {
+			alert('Camera indisponivel');
+			return false;
+		}
 	}
-	
+
 	async ngOnInit() {
+		let teste = this.ifAndroidOrIOS();
 		this.camAvb = await new Promise<boolean>(resolve => {
 			navigator.mediaDevices.getUserMedia({ video: true })
-				.then(mStream => { mStream.stop(); resolve(true); })
+				.then(mStream => { mStream.getTracks()[0].stop(); resolve(true); })
 				.catch(error => resolve(false));
 		});
 	}
@@ -50,5 +55,20 @@ export class HomePage {
 	teste(e) {
 		var file = e.target.files[0];
 		this.photoBlob = this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+	}
+
+	ifAndroidOrIOS() {
+		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+		console.log(userAgent)
+		if (/windows phone/i.test(userAgent)) {
+			return true;
+		}
+		if (/android/i.test(userAgent)) {
+			return true;
+		}
+		if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+			return true;
+		}
+		return false;
 	}
 }
