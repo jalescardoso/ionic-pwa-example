@@ -19,11 +19,18 @@
 			{{position}}
 		</ion-item>
 		<ion-item>
-			<button (click)='cameraAvaiable() && fileInput.click()' ion-button>Take photo</button>
-			<input #fileInput type="file" accept="image/*" capture="camera" (change)='teste($event)' hidden/>
+			<button (click)='takePicture()' ion-button>Take photo</button>
+			<input #fileInput type="file" accept="image/*" capture="camera" (change)='changeImage($event)' hidden/>
 		</ion-item>
 		<ion-item *ngIf='photoBlob'>
 			<img [src]='photoBlob' />
+		</ion-item>
+		<ion-item text-wrap>
+			{{userAgent}}<br>
+			{{isMob}}
+		</ion-item>
+		<ion-item>
+			console open? {{consoleOpen}}
 		</ion-item>
 	</ion-list>
 </ion-content>

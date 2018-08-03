@@ -2,6 +2,9 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 declare var window;
 import { DomSanitizer } from '@angular/platform-browser';
+import * as jdetects from 'jdetects';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
 	selector: 'page-home',
@@ -17,28 +20,23 @@ export class HomePage {
 				ev.preventDefault();
 				this.prompt = ev;
 			})
+		this.checkCslOpen = Observable.create(observer => jdetects.create(status => observer.next(status == 'on')))
+			.subscribe((open: boolean) => this.consoleOpen = open);
+		this.userAgent = navigator.userAgent;
+		this.isMob = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
 	}
 	prompt;
 	position;
 	photoBlob;
-	camAvb = false;
-	@ViewChild('videoId') video: ElementRef;
+	consoleOpen: boolean;
+	checkCslOpen: Subject<any>;
+	userAgent;
+	isMob;
+	@ViewChild('fileInput') fileInput: ElementRef;
 
-	cameraAvaiable() {
-		if (this.ifAndroidOrIOS() && this.camAvb) return true;
-		else {
-			alert('Camera indisponivel');
-			return false;
-		}
-	}
-
-	async ngOnInit() {
-		let teste = this.ifAndroidOrIOS();
-		this.camAvb = await new Promise<boolean>(resolve => {
-			navigator.mediaDevices.getUserMedia({ video: true })
-				.then(mStream => { mStream.getTracks()[0].stop(); resolve(true); })
-				.catch(error => resolve(false));
-		});
+	takePicture() {
+		if (this.isMobile()) this.fileInput.nativeElement.click();
+		else alert('Você deve estar em um dispositivo móvel para tirar photos');
 	}
 
 	addHome() {
@@ -52,23 +50,16 @@ export class HomePage {
 			.catch(err => console.error(err));
 	}
 
-	teste(e) {
+	changeImage(e) {
 		var file = e.target.files[0];
 		this.photoBlob = this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
 	}
 
-	ifAndroidOrIOS() {
-		var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-		console.log(userAgent)
-		if (/windows phone/i.test(userAgent)) {
-			return true;
-		}
-		if (/android/i.test(userAgent)) {
-			return true;
-		}
-		if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-			return true;
-		}
-		return false;
+	isMobile() {
+		return !this.consoleOpen && (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
+	};
+
+	ionViewDidLeave() {
+		this.checkCslOpen.unsubscribe();
 	}
 }
