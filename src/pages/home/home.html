@@ -1,13 +1,13 @@
 <ion-header>
 	<ion-navbar>
 		<ion-title>
-			Service work
+			PWA
 		</ion-title>
 	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
-	Test service work functions.
+	Progressive web apps functions
 	<ion-list>
 		<ion-item>
 			<button [disabled]='!prompt' (click)='addHome()' ion-button>add to home screen</button>
@@ -24,13 +24,6 @@
 		</ion-item>
 		<ion-item *ngIf='photoBlob'>
 			<img [src]='photoBlob' />
-		</ion-item>
-		<ion-item text-wrap>
-			{{userAgent}}<br>
-			{{isMob}}
-		</ion-item>
-		<ion-item>
-			console open? {{consoleOpen}}
 		</ion-item>
 	</ion-list>
 </ion-content>

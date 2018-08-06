@@ -2,9 +2,6 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 declare var window;
 import { DomSanitizer } from '@angular/platform-browser';
-import * as jdetects from 'jdetects';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 
 @Component({
 	selector: 'page-home',
@@ -20,18 +17,12 @@ export class HomePage {
 				ev.preventDefault();
 				this.prompt = ev;
 			})
-		this.checkCslOpen = Observable.create(observer => jdetects.create(status => observer.next(status == 'on')))
-			.subscribe((open: boolean) => this.consoleOpen = open);
-		this.userAgent = navigator.userAgent;
-		this.isMob = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
+		navigator.mediaDevices.enumerateDevices().then(d => this.devices = d);
 	}
 	prompt;
 	position;
 	photoBlob;
-	consoleOpen: boolean;
-	checkCslOpen: Subject<any>;
-	userAgent;
-	isMob;
+	devices;
 	@ViewChild('fileInput') fileInput: ElementRef;
 
 	takePicture() {
@@ -56,10 +47,7 @@ export class HomePage {
 	}
 
 	isMobile() {
-		return !this.consoleOpen && (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent));
+		// preciso capturar a imagem exclusivamente pela camera
+		return (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) && 'ontouchstart' in document.documentElement && this.devices.filter(x => x.kind == 'videoinput').length > 0;
 	};
-
-	ionViewDidLeave() {
-		this.checkCslOpen.unsubscribe();
-	}
 }
