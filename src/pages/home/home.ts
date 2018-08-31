@@ -17,17 +17,20 @@ export class HomePage {
 				ev.preventDefault();
 				this.prompt = ev;
 			})
-		navigator.mediaDevices.enumerateDevices().then(d => this.devices = d);
 	}
 	prompt;
 	position;
 	photoBlob;
-	devices;
 	@ViewChild('fileInput') fileInput: ElementRef;
 
 	takePicture() {
-		if (this.isMobile()) this.fileInput.nativeElement.click();
-		else alert('Você deve estar em um dispositivo móvel para tirar photos');
+		let input = window.document.createElement('input');
+		input.setAttribute('type', "file");
+		input.setAttribute('accept', "image/*");
+		input.setAttribute('capture', "camera");
+		input.click();
+		new Promise(resolve => input.addEventListener('change', resolve))
+			.then(e => this.changeImage(e))
 	}
 
 	addHome() {
@@ -46,8 +49,4 @@ export class HomePage {
 		this.photoBlob = this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
 	}
 
-	isMobile() {
-		// preciso capturar a imagem exclusivamente pela camera
-		return (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) && 'ontouchstart' in document.documentElement && this.devices.filter(x => x.kind == 'videoinput').length > 0;
-	};
 }
